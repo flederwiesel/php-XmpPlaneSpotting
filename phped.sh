@@ -55,7 +55,7 @@ do
 	fi
 
 	# Use eval for variables embedded in query string
-	index=$(eval echo "${p##*:}${fin}")
+	index="$(eval echo ${p##*:})${fin}"
 	project="${p%%:*}"
 
 	cat > "${scriptdir}/.phped/${project}.ppj" <<-EOF
