@@ -24,6 +24,7 @@ urlencode() {
 }
 
 projects=(
+	# name:query_string
 	"index:index.php?"
 )
 
@@ -53,7 +54,8 @@ do
 		fin='?'
 	fi
 
-	index="${p##*:}${fin}"
+	# Use eval for variables embedded in query string
+	index=$(eval echo "${p##*:}${fin}")
 	project="${p%%:*}"
 
 	cat > "${scriptdir}/.phped/${project}.ppj" <<-EOF
