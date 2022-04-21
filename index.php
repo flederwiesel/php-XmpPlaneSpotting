@@ -120,17 +120,17 @@ class XmpPlaneSpottingParser
 	// XML parser from https://www.php.net/manual/en/function.xml-parse.php#79790,
 	// stripped down to the *very* essential parts...
 
-    private $parser;
-    private $name;
+	private $parser;
+	private $name;
 	private $data;
 
-    public function __construct(/* XmpPlaneSpotting */ &$data, $file)
-    {
-    	$this->data = $data;
+	public function __construct(/* XmpPlaneSpotting */ &$data, $file)
+	{
+		$this->data = $data;
 
-    	// Scan JPEG (JFIF) for markers.
-    	// If M_APP1 section contains "http://ns.adobe.com/xap/1.0/", this is
-    	// where the XMP data is found -> parse XMP.
+		// Scan JPEG (JFIF) for markers.
+		// If M_APP1 section contains "http://ns.adobe.com/xap/1.0/", this is
+		// where the XMP data is found -> parse XMP.
 		$marker = fread($file, 2);
 
 		if ($marker)
@@ -166,8 +166,8 @@ class XmpPlaneSpottingParser
 							$marker = NULL;
 						}
 						else
-	                    {
-	                    	// This indicates XMP data is following
+						{
+							// This indicates XMP data is following
 							if ("http://ns.adobe.com/xap/1.0/\0" == substr($result, 0, 29))
 								$this->parse(substr($result, 29));
 						}
@@ -187,55 +187,55 @@ class XmpPlaneSpottingParser
 		}
 	}
 
-    public function parse($xmp)
-    {
-        $this->parser = xml_parser_create();
+	public function parse($xmp)
+	{
+		$this->parser = xml_parser_create();
 
-        xml_set_object($this->parser, $this);
-        xml_set_element_handler($this->parser, "startXML", "endXML");
-        xml_set_character_data_handler($this->parser, "charXML");
+		xml_set_object($this->parser, $this);
+		xml_set_element_handler($this->parser, "startXML", "endXML");
+		xml_set_character_data_handler($this->parser, "charXML");
 
-        xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
+		xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
 
-        if (!xml_parse($this->parser, $xmp))
-        {
-            throw new Exception(
-            	sprintf("XML error at line %d column %d",
-			    	xml_get_current_line_number($this->parser),
-            		xml_get_current_column_number($this->parser)));
-        }
+		if (!xml_parse($this->parser, $xmp))
+		{
+			throw new Exception(
+				sprintf("XML error at line %d column %d",
+					xml_get_current_line_number($this->parser),
+					xml_get_current_column_number($this->parser)));
+		}
 	}
 
-    private function startXML($parser, $name, $attr)
-    {
-    	$this->name = $name;
-    }
+	private function startXML($parser, $name, $attr)
+	{
+		$this->name = $name;
+	}
 
-    private function endXML($parser, $name)
-    {
-    }
+	private function endXML($parser, $name)
+	{
+	}
 
-    private function charXML($parser, $data)
-    {
-    	switch ($this->name)
-    	{
-    	case "PlaneSpotting:Airport":
-    		$this->data->airport .= trim($data);
-    		break;
-    	case "PlaneSpotting:Callsign":
-    		$this->data->callsign .= trim($data);
-    		break;
-    	case "PlaneSpotting:Aircraft":
-    		$this->data->aircraft .= trim($data);
-    		break;
-    	case "PlaneSpotting:AircraftType":
-    		$this->data->type .= trim($data);
-    		break;
-    	case "PlaneSpotting:Airline":
-    		$this->data->airline .= trim($data);
-    		break;
+	private function charXML($parser, $data)
+	{
+		switch ($this->name)
+		{
+		case "PlaneSpotting:Airport":
+			$this->data->airport .= trim($data);
+			break;
+		case "PlaneSpotting:Callsign":
+			$this->data->callsign .= trim($data);
+			break;
+		case "PlaneSpotting:Aircraft":
+			$this->data->aircraft .= trim($data);
+			break;
+		case "PlaneSpotting:AircraftType":
+			$this->data->type .= trim($data);
+			break;
+		case "PlaneSpotting:Airline":
+			$this->data->airline .= trim($data);
+			break;
 		}
-    }
+	}
 }
 
 class XmpPlaneSpotting
