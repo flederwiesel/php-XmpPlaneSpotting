@@ -1,0 +1,41 @@
+# XMP tags for plane spotting
+#
+# Tags:
+# - Airport
+# - Aircraft
+# - AircraftType
+# - Callsign
+# - Airline
+#
+# Usage:
+#
+# `exiftool -XMP-PlaneSpotting:Airport          $file`
+# `exiftool -XMP-PlaneSpotting:Airport=FRA/EDDF $file`
+#
+# or short:
+#
+# `exiftool -Airport          $file`
+# `exiftool -Airport=FRA/EDDF $file`
+
+%Image::ExifTool::UserDefined::PlaneSpotting = (
+	GROUPS       => { 0 => 'XMP', 1 => 'XMP-PlaneSpotting', 2 => 'Image' },
+	NAMESPACE    => { 'PlaneSpotting' => 'http://fra-fplugplan.de/PlaneSpotting/2.0' },
+	WRITABLE     => 'string',
+	Aircraft     => { Writable => 'string' },
+	AircraftType => { Writable => 'string' },
+	Airline      => { Writable => 'string' },
+	Airport      => { Writable => 'string' },
+	Callsign     => { Writable => 'string' },
+);
+
+%Image::ExifTool::UserDefined = (
+	'Image::ExifTool::XMP::Main' => {
+		PlaneSpotting => {
+			SubDirectory => {
+				TagTable => 'Image::ExifTool::UserDefined::PlaneSpotting',
+			},
+		},
+	},
+);
+
+1;  #end
